@@ -1,0 +1,4 @@
+---
+runtime: python37
+service: elisspot
+entrypoint: gunicorn -b :$PORT main:app
