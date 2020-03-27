@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from flask import Flask, request, render_template, redirect, url_for
+from keys import SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET
 from webbrowser import open_new_tab
 from threading import Thread
 from queue import Queue
@@ -149,7 +150,6 @@ class Spot(object):
 
 # create the flask application
 app = Flask(__name__)
-from keys import SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET
 
 # SPOTIPY_REDIRECT_URI = 'https://elisspot-dot-elisspot.appspot.com'
 SPOTIPY_REDIRECT_URI = 'http://127.0.0.1:5000'
@@ -170,7 +170,7 @@ def index():
 
     access_token = ""
     token_info = sp_oauth.get_cached_token()
-    token_info = []
+    token_info = [] # hack for now
 
     if token_info:
         print("Found cached token!")
