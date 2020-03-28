@@ -44,7 +44,7 @@ class Spot(object):
         results = self.sp.current_user_top_tracks(time_range='short_term', limit=10)
         items.extend(results['items'])
         items = list({v['id']: v for v in items}.values())  # remove duplicates
-        return random.sample(items, k=max(limit, len(items)))
+        return random.sample(items, k=min(limit, len(items)))
 
     def get_random_top_tracks_for_artists(self, artists):
         items = []
@@ -62,7 +62,7 @@ class Spot(object):
         results = self.sp.current_user_top_artists(time_range='short_term', limit=10)
         items.extend(self.get_random_top_tracks_for_artists(results))
         items = list({v['id']: v for v in items}.values())  # remove duplicates
-        return random.sample(items, k=max(limit, len(items)))
+        return random.sample(items, k=min(limit, len(items)))
 
     def get_discover_weekly_tracks(self, limit=30):
         offset = 0
@@ -78,7 +78,7 @@ class Spot(object):
         if playlist['name'] == 'Discover Weekly':
             results = self.sp.playlist_tracks(playlist_id=playlist['id'])
             items = [item['track'] for item in results['items']]
-            return random.sample(items, k=max(limit, len(items)))
+            return random.sample(items, k=min(limit, len(items)))
         else:
             return []
 
@@ -98,7 +98,7 @@ class Spot(object):
         for i in range((len(artist_ids) + num_seeds - 1) // num_seeds):
             sub_artist_ids = artist_ids[i * num_seeds:(i + 1) * num_seeds]
             items.extend(self.get_recommendations_for_artists(sub_artist_ids, limit=25))
-        return random.sample(items, k=max(limit, len(items)))
+        return random.sample(items, k=min(limit, len(items)))
 
     def get_recommendations_from_top_tracks(self, limit=100):
         items = []
@@ -108,14 +108,14 @@ class Spot(object):
         for i in range((len(track_ids) + num_seeds - 1) // num_seeds):
             sub_track_ids = track_ids[i * num_seeds:(i + 1) * num_seeds]
             items.extend(self.get_recommendations_for_tracks(sub_track_ids, limit=25))
-        return random.sample(items, k=max(limit, len(items)))
+        return random.sample(items, k=min(limit, len(items)))
 
     def get_adventurous_tracks(self, limit=20):
         items = self.get_discover_weekly_tracks(limit=30)
         items.extend(self.get_recommendations_from_top_artist(limit=50))
         items.extend(self.get_recommendations_from_top_tracks(limit=50))
         items = list({v['id']: v for v in items}.values())  # remove duplicates
-        return random.sample(items, k=max(limit, len(items)))
+        return random.sample(items, k=min(limit, len(items)))
 
     def get_tracks(self, level='top', limit=20):
         if level == 'top':
@@ -152,7 +152,7 @@ class Spot(object):
 app = Flask(__name__)
 
 # SPOTIPY_REDIRECT_URI = 'https://elisspot-dot-elisspot.appspot.com'
-SPOTIPY_REDIRECT_URI = 'http://127.0.0.1:5000'
+SPOTIPY_REDIRECT_URI = 'http://127.0.0.1:8080'
 CACHE = '.spotipyoauthcache'  # not used online
 SCOPE = 'user-library-read user-follow-read user-top-read user-read-currently-playing ' \
         'playlist-read-private playlist-modify-private'
@@ -240,6 +240,5 @@ def createPlaylists(queue):
 
 
 if __name__ == "__main__":
-    open_new_tab("http://127.0.0.1:5000")
-    app.run(debug=True, use_reloader=False)
+    app.run(host="127.0.0.1", port=8080, debug=True, use_reloader=False)
     # app.run(host="127.0.0.1", port=8080, debug=True)

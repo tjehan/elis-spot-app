@@ -3,7 +3,7 @@
 
 <head>
     {% block head %}
-    <link rel='stylesheet' type="text/css" href="static/style.css?rnd=37">
+    <link rel='stylesheet' type="text/css" href="static/style.css">
     <title>Elis Spotify App {% block title %}{% endblock %}</title>
     {% endblock %}
 </head>
@@ -13,9 +13,9 @@
 
     {% block body %}
     <button onclick="window.location.href = '{{ auth_url }}';" >Login</button>
-    <p>Please note: this will use the currently logged in Spotify user on the machine. If you
-        wish to use a different user, click the "not you" link on the bottom. 
-    </p>
+<!--    <p>Please note: this will use the currently logged in Spotify user on the machine. If you-->
+<!--        wish to use a different user, click the "not you" link on the bottom. -->
+<!--    </p>-->
     {% endblock %}
 </body>
 </html>
