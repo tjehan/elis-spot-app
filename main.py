@@ -34,8 +34,9 @@ class Spot(object):
         self.username = _sp.current_user()['id']
 
     def get_top_tracks(self, limit=20):
+        items = []
         results = self.sp.current_user_saved_tracks(limit=30)
-        items = [item['track'] for item in results['items']]
+        items.extend([item['track'] for item in results['items']])
         results = self.sp.current_user_top_tracks(time_range='long_term', limit=40)
         items.extend(results['items'])
         results = self.sp.current_user_top_tracks(time_range='medium_term', limit=20)
@@ -51,8 +52,10 @@ class Spot(object):
         items = []
         for artist in artists['items']:
             res = self.sp.artist_top_tracks(artist['id'])
-            if res:
+            try:
                 items.append(random.choice(res['tracks']))
+            except:
+                print("Exception in get_random_top_tracks_for_artists")
         return items
 
     def get_safe_tracks(self, limit=20):
@@ -119,7 +122,8 @@ class Spot(object):
         return items
 
     def get_adventurous_tracks(self, limit=20):
-        items = self.get_discover_weekly_tracks(limit=30)
+        items = []
+        items.extend(self.get_discover_weekly_tracks(limit=30))
         items.extend(self.get_recommendations_from_top_artist(limit=50))
         items.extend(self.get_recommendations_from_top_tracks(limit=50))
         items = list({v['id']: v for v in items}.values())  # remove duplicates
@@ -180,7 +184,7 @@ def index():
 
     access_token = ""
     token_info = sp_oauth.get_cached_token()
-    token_info = [] # hack for now
+    token_info = []  # hack for now
 
     if token_info:
         print("Found cached token!")
