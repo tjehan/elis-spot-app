@@ -43,13 +43,16 @@ class Spot(object):
         results = self.sp.current_user_top_tracks(time_range='short_term', limit=10)
         items.extend(results['items'])
         items = list({v['id']: v for v in items}.values())  # remove duplicates
-        return random.sample(items, k=min(limit, len(items)))
+        if items:
+            items = random.sample(items, k=min(limit, len(items)))
+        return items
 
     def get_random_top_tracks_for_artists(self, artists):
         items = []
         for artist in artists['items']:
             res = self.sp.artist_top_tracks(artist['id'])
-            items.append(random.choice(res['tracks']))
+            if res:
+                items.append(random.choice(res['tracks']))
         return items
 
     def get_safe_tracks(self, limit=20):
@@ -61,7 +64,9 @@ class Spot(object):
         results = self.sp.current_user_top_artists(time_range='short_term', limit=10)
         items.extend(self.get_random_top_tracks_for_artists(results))
         items = list({v['id']: v for v in items}.values())  # remove duplicates
-        return random.sample(items, k=min(limit, len(items)))
+        if items:
+            items = random.sample(items, k=min(limit, len(items)))
+        return items
 
     def get_discover_weekly_tracks(self, limit=30):
         offset = 0
@@ -77,9 +82,9 @@ class Spot(object):
         if playlist['name'] == 'Discover Weekly':
             results = self.sp.playlist_tracks(playlist_id=playlist['id'])
             items = [item['track'] for item in results['items']]
-            return random.sample(items, k=min(limit, len(items)))
-        else:
-            return []
+            if items:
+                items = random.sample(items, k=min(limit, len(items)))
+            return items
 
     def get_recommendations_for_artists(self, artist_ids, limit=20):
         results = self.sp.recommendations(seed_artists=artist_ids, limit=limit)
@@ -97,7 +102,9 @@ class Spot(object):
         for i in range((len(artist_ids) + num_seeds - 1) // num_seeds):
             sub_artist_ids = artist_ids[i * num_seeds:(i + 1) * num_seeds]
             items.extend(self.get_recommendations_for_artists(sub_artist_ids, limit=25))
-        return random.sample(items, k=min(limit, len(items)))
+        if items:
+            items = random.sample(items, k=min(limit, len(items)))
+        return items
 
     def get_recommendations_from_top_tracks(self, limit=100):
         items = []
@@ -107,14 +114,18 @@ class Spot(object):
         for i in range((len(track_ids) + num_seeds - 1) // num_seeds):
             sub_track_ids = track_ids[i * num_seeds:(i + 1) * num_seeds]
             items.extend(self.get_recommendations_for_tracks(sub_track_ids, limit=25))
-        return random.sample(items, k=min(limit, len(items)))
+        if items:
+            items = random.sample(items, k=min(limit, len(items)))
+        return items
 
     def get_adventurous_tracks(self, limit=20):
         items = self.get_discover_weekly_tracks(limit=30)
         items.extend(self.get_recommendations_from_top_artist(limit=50))
         items.extend(self.get_recommendations_from_top_tracks(limit=50))
         items = list({v['id']: v for v in items}.values())  # remove duplicates
-        return random.sample(items, k=min(limit, len(items)))
+        if items:
+            items = random.sample(items, k=min(limit, len(items)))
+        return items
 
     def get_tracks(self, level='top', limit=20):
         if level == 'top':
