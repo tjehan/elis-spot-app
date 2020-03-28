@@ -3,7 +3,6 @@
 
 from flask import Flask, request, render_template, redirect, url_for
 from keys import SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET
-from webbrowser import open_new_tab
 from threading import Thread
 from queue import Queue
 import spotipy
@@ -240,5 +239,4 @@ def createPlaylists(queue):
 
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=8080, debug=True, use_reloader=False)
-    # app.run(host="127.0.0.1", port=8080, debug=True)
+    app.run(host="127.0.0.1", port=8080, debug=True)
