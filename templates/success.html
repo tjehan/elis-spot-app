@@ -7,13 +7,14 @@
 {% block body %}
 <div>
     <h2>Success! Check your Spotify playlists.</h2>
+    <p>Please check and scan the 3 new playlists that were created at the top of 'Your Library' within Spotify.
+        They should be sorted from high to low energy. Once you're done listening, please click on the 'Go to Survey'
+        button below to fill out a 2 min survey. You can also start over with the 'Try Again' button. You'll get
+        slightly different results.</p>
+    <br>
+    <button onclick="window.location.href = 'https://docs.google.com/forms/d/e/1FAIpQLScM5vyahap0O6n7ykyg_zqcWblzEsYt0Um2w_B4qlB9JkyRmg/viewform';" >Go to Survey</button>
     <br>
 <!--    <button onclick="window.location.href = 'https://elisspot-dot-elisspot.appspot.com';" >Try again</button>-->
     <button onclick="window.location.href = 'http://127.0.0.1:8080/';" >Try again</button>
-    <p>Please check and scan the 3 new playlists that were created at the top of 'Your Library' within Spotify.
-        They should be sorted from high to low energy. Once you're done listening, please click on the button below
-        to fill out a 2 min survey. You can also start over by clicking on the button above.</p>
-    <br>
-    <button onclick="window.location.href = 'https://docs.google.com/forms/d/e/1FAIpQLScM5vyahap0O6n7ykyg_zqcWblzEsYt0Um2w_B4qlB9JkyRmg/viewform';" >Go to Survey</button>
 </div>
 {% endblock %}
