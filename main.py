@@ -28,8 +28,16 @@ def one_track_per_artist_and_album(items):
         artist_ids.append(artist_id)
         album_ids.append(album_id)
         new_items.append(item)
-    items = new_items
-    return items
+    return new_items
+
+
+def filter_by_duration(items, minsec=120, maxsec=600):
+    new_items = []
+    for item in items:
+        if item['duration_ms'] < minsec * 1000 or item['duration_ms'] > maxsec * 1000:
+            continue
+        new_items.append(item)
+    return new_items
 
 
 class Spot(object):
@@ -61,6 +69,7 @@ class Spot(object):
         results = self.sp.current_user_top_tracks(time_range='short_term', limit=10)
         items.extend(results['items'])
         items = one_track_per_artist_and_album(items)
+        items = filter_by_duration(items, maxsec=600)
         if items:
             items = random.sample(items, k=min(limit, len(items)))
         return items
@@ -84,6 +93,7 @@ class Spot(object):
         results = self.sp.current_user_top_artists(time_range='short_term', limit=10)
         items.extend(self.get_random_top_tracks_for_artists(results))
         items = one_track_per_artist_and_album(items)
+        items = filter_by_duration(items, maxsec=600)
         if items:
             items = random.sample(items, k=min(limit, len(items)))
         return items
@@ -144,6 +154,7 @@ class Spot(object):
         items.extend(self.get_recommendations_from_top_artist(limit=50))
         items.extend(self.get_recommendations_from_top_tracks(limit=50))
         items = one_track_per_artist_and_album(items)
+        items = filter_by_duration(items, maxsec=600)
         if items:
             items = random.sample(items, k=min(limit, len(items)))
         return items
