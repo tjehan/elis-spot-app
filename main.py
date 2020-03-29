@@ -55,7 +55,7 @@ class Spot(object):
             try:
                 items.append(random.choice(res['tracks']))
             except:
-                print("Exception in get_random_top_tracks_for_artists")
+                print("Exception in get_random_top_tracks_for_artists:", artist['id'], artist['name'])
         return items
 
     def get_safe_tracks(self, limit=20):
