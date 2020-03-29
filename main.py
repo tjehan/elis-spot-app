@@ -15,6 +15,20 @@ def list_argsort(seq):
     return sorted(range(len(seq)), key=seq.__getitem__, reverse=True)
 
 
+def one_track_per_artist(items):
+    artist_ids = []
+    new_items = []
+    random.shuffle(items)
+    for item in items:
+        artist_id = item['artists'][0]['id']
+        if artist_id in set(artist_ids):
+            continue
+        artist_ids.append(artist_id)
+        new_items.append(item)
+    items = new_items
+    return items
+
+
 class Spot(object):
     """
         A class that handles basic Spotify music personalization.
@@ -43,16 +57,7 @@ class Spot(object):
         items.extend(results['items'])
         results = self.sp.current_user_top_tracks(time_range='short_term', limit=10)
         items.extend(results['items'])
-        random.shuffle(items)
-        artist_ids = []
-        new_items = []
-        for item in items:
-            artist_id = item['artists'][0]['id']
-            if artist_id in set(artist_ids):
-                continue
-            artist_ids.append(artist_id)
-            new_items.append(item)
-        items = new_items
+        items = one_track_per_artist(items)
         if items:
             items = random.sample(items, k=min(limit, len(items)))
         return items
@@ -75,7 +80,7 @@ class Spot(object):
         items.extend(self.get_random_top_tracks_for_artists(results))
         results = self.sp.current_user_top_artists(time_range='short_term', limit=10)
         items.extend(self.get_random_top_tracks_for_artists(results))
-        items = list({v['id']: v for v in items}.values())  # remove duplicates
+        items = one_track_per_artist(items)
         if items:
             items = random.sample(items, k=min(limit, len(items)))
         return items
@@ -135,7 +140,7 @@ class Spot(object):
         items.extend(self.get_discover_weekly_tracks(limit=30))
         items.extend(self.get_recommendations_from_top_artist(limit=50))
         items.extend(self.get_recommendations_from_top_tracks(limit=50))
-        items = list({v['id']: v for v in items}.values())  # remove duplicates
+        items = one_track_per_artist(items)
         if items:
             items = random.sample(items, k=min(limit, len(items)))
         return items
