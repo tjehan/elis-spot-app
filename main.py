@@ -43,7 +43,17 @@ class Spot(object):
         items.extend(results['items'])
         results = self.sp.current_user_top_tracks(time_range='short_term', limit=10)
         items.extend(results['items'])
-        items = list({v['id']: v for v in items}.values())  # remove duplicates
+        # items.shuffle(items)
+        artist_ids = []
+        new_items = []
+        for item in items:
+            artist_id = item['artists'][0]['id']
+            print(artist_id)
+            if artist_id in set(artist_ids):
+                continue
+            artist_ids.append(artist_id)
+            new_items.append(item)
+        items = new_items
         if items:
             items = random.sample(items, k=min(limit, len(items)))
         return items
