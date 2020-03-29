@@ -43,12 +43,11 @@ class Spot(object):
         items.extend(results['items'])
         results = self.sp.current_user_top_tracks(time_range='short_term', limit=10)
         items.extend(results['items'])
-        # items.shuffle(items)
+        random.shuffle(items)
         artist_ids = []
         new_items = []
         for item in items:
             artist_id = item['artists'][0]['id']
-            print(artist_id)
             if artist_id in set(artist_ids):
                 continue
             artist_ids.append(artist_id)
