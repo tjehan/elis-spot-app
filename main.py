@@ -254,7 +254,8 @@ def run():
 
 @app.route("/success")
 def success():
-    return render_template("success.html")
+    auth_url = sp_oauth.get_authorize_url()
+    return render_template("success.html", auth_url=auth_url)
 
 
 def createPlaylists(queue):
