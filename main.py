@@ -69,7 +69,7 @@ class Spot(object):
         results = self.sp.current_user_top_tracks(time_range='short_term', limit=10)
         items.extend(results['items'])
         items = one_track_per_artist_and_album(items)
-        items = filter_by_duration(items, maxsec=600)
+        items = filter_by_duration(items, minsec=120, maxsec=600)
         if items:
             items = random.sample(items, k=min(limit, len(items)))
         return items
@@ -86,14 +86,14 @@ class Spot(object):
 
     def get_safe_tracks(self, limit=20):
         items = []
-        results = self.sp.current_user_top_artists(time_range='long_term', limit=40)
+        results = self.sp.current_user_top_artists(time_range='long_term', limit=55)
         items.extend(self.get_random_top_tracks_for_artists(results))
-        results = self.sp.current_user_top_artists(time_range='medium_term', limit=20)
+        results = self.sp.current_user_top_artists(time_range='medium_term', limit=30)
         items.extend(self.get_random_top_tracks_for_artists(results))
-        results = self.sp.current_user_top_artists(time_range='short_term', limit=10)
+        results = self.sp.current_user_top_artists(time_range='short_term', limit=15)
         items.extend(self.get_random_top_tracks_for_artists(results))
         items = one_track_per_artist_and_album(items)
-        items = filter_by_duration(items, maxsec=600)
+        items = filter_by_duration(items, minsec=120, maxsec=600)
         if items:
             items = random.sample(items, k=min(limit, len(items)))
         return items
@@ -154,7 +154,7 @@ class Spot(object):
         items.extend(self.get_recommendations_from_top_artist(limit=50))
         items.extend(self.get_recommendations_from_top_tracks(limit=50))
         items = one_track_per_artist_and_album(items)
-        items = filter_by_duration(items, maxsec=600)
+        items = filter_by_duration(items, minsec=120, maxsec=600)
         if items:
             items = random.sample(items, k=min(limit, len(items)))
         return items
@@ -261,19 +261,19 @@ def createPlaylists(queue):
     global spot
 
     queue.put(10)
-    tracks = spot.get_tracks(level='adventurous', limit=25)
+    tracks = spot.get_tracks(level='adventurous', limit=30)
     name = "Elis Adventurous"
     description = "Adventurous personalization for Elis"
     queue.put(25)
     spot.create_playlist(tracks=tracks, name=name, description=description)
     queue.put(40)
-    tracks = spot.get_tracks(level='safe', limit=25)
+    tracks = spot.get_tracks(level='safe', limit=30)
     name = "Elis Safe"
     description = "Safe personalization for Elis"
     queue.put(60)
     spot.create_playlist(tracks=tracks, name=name, description=description)
     queue.put(80)
-    tracks = spot.get_tracks(level='top', limit=25)
+    tracks = spot.get_tracks(level='top', limit=30)
     name = "Elis Top"
     description = "Top personalization for Elis"
     spot.create_playlist(tracks=tracks, name=name, description=description)
