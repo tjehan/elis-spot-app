@@ -71,7 +71,7 @@ class Spot(object):
         self.sp = _sp
         self.username = _sp.current_user()['id']
         print("#"*100)
-        print("Logging:", self.username)
+        print("Spotify User ID = spotify:user:" + self.username)
 
     def get_top_tracks(self, limit=20):
         items = []
@@ -203,7 +203,7 @@ class Spot(object):
                                                     description=description)
         track_ids = [track['id'] for track in tracks]
         self.sp.user_playlist_replace_tracks(user=self.username, playlist_id=playlist['id'], tracks=track_ids)
-        print("Playlist ID for " + name + " is spotify:playlist:" + playlist['id'])
+        print("Playlist ID " + name + " = spotify:playlist:" + playlist['id'])
 
 
 # create the flask application
