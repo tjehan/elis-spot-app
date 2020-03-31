@@ -40,6 +40,19 @@ def filter_by_duration(items, minsec=120, maxsec=600):
     return new_items
 
 
+def filter_tracks(items, minsec=120, maxsec=600):
+    with open('christmas_title_blacklist.txt') as f:
+        blacklist = [line.rstrip() for line in f]
+    new_items = []
+    for item in items:
+        if item['duration_ms'] < minsec * 1000 or item['duration_ms'] > maxsec * 1000:
+            continue
+        if item['name'] in blacklist:
+            continue
+        new_items.append(item)
+    return new_items
+
+
 class Spot(object):
     """
         A class that handles basic Spotify music personalization.
@@ -69,7 +82,7 @@ class Spot(object):
         results = self.sp.current_user_top_tracks(time_range='short_term', limit=10)
         items.extend(results['items'])
         items = one_track_per_artist_and_album(items)
-        items = filter_by_duration(items, minsec=120, maxsec=600)
+        items = filter_tracks(items)
         if items:
             items = random.sample(items, k=min(limit, len(items)))
         return items
@@ -93,7 +106,7 @@ class Spot(object):
         results = self.sp.current_user_top_artists(time_range='short_term', limit=15)
         items.extend(self.get_random_top_tracks_for_artists(results))
         items = one_track_per_artist_and_album(items)
-        items = filter_by_duration(items, minsec=120, maxsec=600)
+        items = filter_tracks(items)
         if items:
             items = random.sample(items, k=min(limit, len(items)))
         return items
@@ -154,7 +167,7 @@ class Spot(object):
         items.extend(self.get_recommendations_from_top_artist(limit=50))
         items.extend(self.get_recommendations_from_top_tracks(limit=50))
         items = one_track_per_artist_and_album(items)
-        items = filter_by_duration(items, minsec=120, maxsec=600)
+        items = filter_tracks(items)
         if items:
             items = random.sample(items, k=min(limit, len(items)))
         return items
@@ -201,6 +214,7 @@ SCOPE = 'user-library-read user-follow-read user-top-read user-read-currently-pl
 
 sp_oauth = oauth2.SpotifyOAuth(SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET, SPOTIPY_REDIRECT_URI, scope=SCOPE,
                                cache_path=CACHE, show_dialog=True)
+
 spot = None
 thread = None
 queue = Queue()
