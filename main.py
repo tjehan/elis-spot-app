@@ -31,18 +31,11 @@ def one_track_per_artist_and_album(items):
     return new_items
 
 
-def filter_by_duration(items, minsec=120, maxsec=600):
-    new_items = []
-    for item in items:
-        if item['duration_ms'] < minsec * 1000 or item['duration_ms'] > maxsec * 1000:
-            continue
-        new_items.append(item)
-    return new_items
-
-
 def filter_tracks(items, minsec=120, maxsec=600):
     with open('christmas_title_blacklist.txt') as f:
         blacklist = [line.rstrip() for line in f]
+    with open('children_title_blacklist.txt') as f:
+        blacklist.extend([line.rstrip() for line in f])
     new_items = []
     for item in items:
         if item['duration_ms'] < minsec * 1000 or item['duration_ms'] > maxsec * 1000:
